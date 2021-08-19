@@ -1,0 +1,26 @@
+@startuml
+
+:event received by component A;
+
+:try get object from component B;
+
+if (is object found?) then (YES)
+	:check if object X is existing;
+
+	if (object X existing?) then (YES)
+		
+		:update object X;
+		
+		:send **UpdateEvent**;
+		
+	else (NO)
+		:no action;
+	endif
+
+else (NO)
+	stop
+endif
+
+stop 
+
+@enduml

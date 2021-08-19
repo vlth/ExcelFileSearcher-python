@@ -1,0 +1,39 @@
+@startuml
+' this is a comment
+
+participant MasterController as mc
+participant KSRootView as rv
+
+mc --> rv : do sth
+note right
+	some note 
+end note
+
+alt this is an alternative. IF sth then
+
+	rv --> mc : do sth back
+
+else IF sth else then
+
+	rv --> mc : do sth
+	note left
+		another note
+	end note
+
+	group this is a GROUP, NO alternative. for example for a ASYNC process
+		mc --> rv: some async call maybe
+		note left
+			another note
+		end note
+	end
+
+	mc --> rv : some data
+	rv --> rv : handle sth
+
+else another IF sth else then
+	
+	mc --> mc : do sth
+
+end
+
+@enduml

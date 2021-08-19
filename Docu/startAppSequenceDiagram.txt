@@ -1,0 +1,24 @@
+@startuml
+
+participant View as view
+participant Presenter as presenter
+participant Model as model
+participant Datatable as dt
+
+presenter --> model : get all datatables
+presenter --> presenter : save all datatables
+
+loop for all datatables
+	presenter --> dt : get all column-names
+	presenter --> presenter : save all column-names
+	note left
+		only save column-name if not existing yet
+	end note
+end
+
+presenter --> presenter : create view-models for datatables and column names
+presenter --> view : handover view-models
+presenter --> view : update UI
+view --> view : update UI elements
+
+@enduml

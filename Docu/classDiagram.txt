@@ -1,0 +1,105 @@
+@startuml
+
+package MasterControllerDataModels{
+	
+	class ContactMetaData{
+		+ Member getMember()
+		+ String getContactType() // person, service
+		+ String getPersonalAttributesJson() // contains a JSON to define what kind of service this is 
+		+ String getConversationId()
+		+ String getUserId()
+		+ String getEcoId()
+	}
+	note left of ContactMetaData
+		A Contact can be a PERSON or a SERVICE
+	end note
+
+}
+
+package MasterControllerUpdateEvents{
+	class ContactMetaDataUpdateEvent{
+		+ ContactMetaData getContactMetaData()
+		+ Array<ListDetail> getListDetails()
+	}
+	class ConversationMetaDataUpdateEvent{
+		+ getConversationId()
+	}
+}
+
+' #####
+' #####
+' #####
+
+package UiDataModels{
+	
+	class KsUiContact{
+		+ KsContactMetaData getContactMetaData()
+		+ KsContactData getContactData()
+		+ String getFullname()  // convenient method
+		+ String getInitials()  // convenient method
+	}
+	class KsUiServiceContact{
+
+	}
+	KsUiServiceContact --|> KsUiContact : inherits
+
+}
+
+' #####
+' #####
+' #####
+
+package UiDataManagers{
+	
+	class KsContactManager{
+		.. private members ..
+		(save less data as possible to keep complexity low)
+		Array<KsUiContacts> allContacts  // without service contacts
+		Array<KsUiServiceContact> allServiceContacts
+		Array<KsUiService> allServices
+		Array<KsUiContactList> allContactLists
+		Array<KsUiChatGroup> allChatGroups
+		Dictionary<KsUiChatGroup, Array<KsContactIdentifier>> chatGroupsContactsMapping;  // to link which contacts are in which chatgroups
+		Dictionary<KsUiContactList, Array<KsContactIdentifier>> contactListsContactsMapping; // to link which contacts are in which contactlists
+
+		.. methods ..
+		+ Array<KsUiContacts> getAllActivatedUiContacts()
+		+ Array<KsUiContacts> getAllNotActivatedUiContacts()
+		+ Array<KsUiContacts> getAllActivatedUiContactsWithOutLoggedInUser()
+
+	}
+	
+}
+note right of UiDataManagers
+		run in background
+		run with event queue
+		always working with copies of the arrays when updating or 
+		returning data(to avoid modified while being enumerated)		
+		do filter operations on the NSArray: use the NSArray like a "database"
+end note
+UiDataManagers --|> MasterControllerUpdateEvents : receives and handle (updating the local data)
+UiDataManagers --|> UiUpdateEvents : sends
+	
+
+' #####
+' #####
+' #####
+
+package UiUpdateEvents{
+	
+	class KsUiContactListUpdateEvent{
+		+ KsUiIdentifier identifier  // to force that KsContactManager is called to get 'fresh' data
+	}
+}
+
+' #####
+' #####
+' #####
+
+package UiElements{
+	class ViewControllers
+}
+ViewControllers --|> UiDataModels : use to render UI
+ViewControllers --|> UiDataManagers : get data
+
+@enduml

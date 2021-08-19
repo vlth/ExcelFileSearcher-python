@@ -1,0 +1,39 @@
+@startuml
+
+
+participant View as view
+participant Presenter as presenter
+participant Model as model
+participant Datatable as dt
+
+view --> view : get filepath and filename
+view --> presenter : handover filepath and filename
+
+presenter --> presenter : parse excel file with pandas and get pandas.dataframe
+presenter --> presenter : create data-model 
+presenter --> model : handover data-model and filename
+
+model --> model : save data-model as a Datatable in database using the filename
+note left
+	OVERRIDE if database already contains data for this filename
+end note
+
+presenter --> model : get Datatable for the filename
+presenter --> presenter : save Datatable
+note left
+	OVERRIDE if already existing
+end note
+
+presenter --> dt : get all column-names
+presenter --> presenter : save all column-names
+note left
+	only save column-name if not existing yet
+end note
+
+
+presenter --> presenter : create view-model for the Datatable
+presenter --> view : handover view-model
+presenter --> view : update UI
+view --> view : update UI elements
+
+@enduml
