@@ -1,0 +1,22 @@
+@startuml
+
+participant View as view
+participant Presenter as presenter
+participant Model as model
+
+view --> view : create view search condition(s)
+view --> presenter : handover view search condition(s)
+
+presenter --> presenter : create model search condition(s)
+presenter --> model : handover model search condition(s) 
+
+model --> model : do search datatables 
+model --> model : create search result object
+model --> presenter : return search result object
+
+presenter --> presenter : create view-models from search result object
+presenter --> view : handover view-models
+presenter --> view : update UI
+view --> view : update UI elements
+
+@enduml

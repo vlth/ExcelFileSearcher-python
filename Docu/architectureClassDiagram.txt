@@ -1,0 +1,89 @@
+@startuml
+
+package Model{
+	
+	class ModelDatatable{
+		+ String get_datatable_name ()
+		+ Array<String> get_column_names ()
+		+ Array<ModelDatatableRow> get_rows ()
+	}
+
+	class ModelDatatableRow{
+		+ String get_datatable_name ()
+		+ Array<ModelDatatableRowEntry> get_row_entries ()
+	}
+
+	class ModelDatatableRowEntry{
+		+ String get_datatable_name ()
+		+ String get_column_name ()
+		+ String get_value ()
+	}
+
+	class ModelSearchCriteria{
+		+ Array<String> get_table_names ()
+		+ Array<String> get_column_names ()
+		+ String get_search_text ()
+	}
+
+	class ModelSearchResult{
+		+ Array<ModelDatatableRow> get_rows ()
+	}
+
+	class ModelManager{
+		+ Array<ModelDatatable> get_datatables ()
+		+ ModelDatatable get_datatable_with_name (String datatableName)
+		+ void save_datatable (String datatableName, ModelDatatable datatable)
+		+ ModelSearchResult search_with_criterias (Array<ModelSearchCriteria> criterias)
+		+ void delete_datatable (String datatableName)
+	}
+}
+
+package View{
+	
+	class ViewTableRowEntry{
+		+ String get_column_name ()
+		+ String get_value ()
+	}
+
+	class ViewTableRow{
+		+ String get_datatable_name ()
+		+ Array<ViewTableRowEntry> get_row_entries ()
+	}
+
+	class ViewDatatable{
+		+ String get_datatable_name ()
+		+ Array<String> get_column_ames ()
+	}
+
+	class ViewSearchCriteria{
+		+ Array<String> get_table_names ()
+		+ Array<String> get_column_names ()
+		+ String get_searchtext ()
+	}
+
+	class ViewManager{
+		ViewListener listener
+		+ void show_datatables (Array<ViewDatatable> datatables)
+		+ void add_datatable (ViewDatatable datatable)
+		+ void show_rows (Array<ViewTableRow> rows)
+	}
+
+	interface ViewListener{
+		+ void do_import_data (String filepath, String filename)
+		+ void do_search_with_criterias (Array<ViewSearchCriteria> criterias)
+	}
+}
+
+package Presenter{
+	
+	class PresenterManager{
+
+	}
+
+	PresenterManager --|> ViewListener : implements
+	PresenterManager --|> ViewManager : calls
+	PresenterManager --|> ModelManager : calls
+
+}
+
+@enduml
